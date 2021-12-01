@@ -14,5 +14,16 @@ fn main() -> anyhow::Result<()> {
 
     println!("first answer is {}", count);
 
+    let depths_sum_by_3: Vec<u32> = depths
+        .windows(3)
+        .map(|depth| depth.into_iter().cloned().sum())
+        .collect();
+
+    let count = depths_sum_by_3
+        .windows(2)
+        .fold(0, |acc, depths| acc + (depths[0] < depths[1]) as usize);
+
+    println!("second answer is {}", count);
+
     Ok(())
 }
