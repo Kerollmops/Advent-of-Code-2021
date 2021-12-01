@@ -10,7 +10,8 @@ fn main() -> anyhow::Result<()> {
 
     let count = depths
         .windows(2)
-        .fold(0, |acc, depths| acc + (depths[0] < depths[1]) as usize);
+        .filter(|depths| depths[0] < depths[1])
+        .count();
 
     println!("first answer is {}", count);
 
@@ -21,7 +22,8 @@ fn main() -> anyhow::Result<()> {
 
     let count = depths_sum_by_3
         .windows(2)
-        .fold(0, |acc, depths| acc + (depths[0] < depths[1]) as usize);
+        .filter(|depths| depths[0] < depths[1])
+        .count();
 
     println!("second answer is {}", count);
 
