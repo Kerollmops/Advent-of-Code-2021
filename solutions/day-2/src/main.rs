@@ -49,7 +49,7 @@ fn main() -> anyhow::Result<()> {
     let mut horizontal = 0;
     let mut vertical = 0;
 
-    for movement in movements {
+    for movement in &movements {
         match movement {
             Movement::Forward(n) => horizontal += n,
             Movement::Down(n) => vertical += n,
@@ -59,6 +59,24 @@ fn main() -> anyhow::Result<()> {
 
     let answer = horizontal * vertical;
     println!("first answer is {}", answer);
+
+    let mut horizontal = 0;
+    let mut depth = 0;
+    let mut aim = 0;
+
+    for movement in &movements {
+        match movement {
+            Movement::Forward(n) => {
+                horizontal += n;
+                depth += aim * n;
+            }
+            Movement::Down(n) => aim += n,
+            Movement::Up(n) => aim -= n,
+        }
+    }
+
+    let answer = horizontal * depth;
+    println!("second answer is {}", answer);
 
     Ok(())
 }
