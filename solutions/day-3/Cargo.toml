@@ -1,0 +1,8 @@
+[package]
+name = "advent-of-code-2021"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.51"
+bitvec = "1.0.0-rc1"
