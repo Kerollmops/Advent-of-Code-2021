@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 
 const INPUT: &str = include_str!("../../../inputs/day-3.txt");
 
-fn main() -> anyhow::Result<()> {
+fn main() {
     let bits_lines: Vec<_> = INPUT.lines().collect();
     let number_lines = bits_lines.len();
     let length = bits_lines[0].len();
@@ -17,7 +17,7 @@ fn main() -> anyhow::Result<()> {
 
     let mut gamma_bits: BitVec = BitVec::new();
     let mut alpha_bits: BitVec = BitVec::new();
-    for (i, count) in ones_counts.into_iter().enumerate() {
+    for count in ones_counts.into_iter() {
         if count > number_lines / 2 {
             gamma_bits.push(true);
             alpha_bits.push(false);
@@ -46,8 +46,6 @@ fn main() -> anyhow::Result<()> {
 
     let answer = oxygen_generator_rating * co2_scrubber_rating;
     println!("second answer is {}", answer);
-
-    Ok(())
 }
 
 enum Common {
@@ -62,7 +60,7 @@ fn filter_lines<'a>(lines: &mut Vec<&'a str>, position: usize, criteria: Common)
         let mut ones_count = 0;
         let mut zeros_count = 0;
         for line in lines.iter() {
-            if (line.chars().nth(position) == Some('1')) {
+            if line.chars().nth(position) == Some('1') {
                 ones_count += 1;
             } else {
                 zeros_count += 1;
