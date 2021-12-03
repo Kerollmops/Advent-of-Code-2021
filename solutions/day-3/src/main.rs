@@ -1,4 +1,3 @@
-use bitvec::prelude::*;
 use std::cmp::Ordering;
 
 const INPUT: &str = include_str!("../../../inputs/day-3.txt");
@@ -15,23 +14,20 @@ fn main() {
         }
     }
 
-    let mut gamma_bits: BitVec = BitVec::new();
-    let mut alpha_bits: BitVec = BitVec::new();
+    let mut gamma_bits = String::new();
+    let mut alpha_bits = String::new();
     for count in ones_counts.into_iter() {
         if count > number_lines / 2 {
-            gamma_bits.push(true);
-            alpha_bits.push(false);
+            gamma_bits.push('1');
+            alpha_bits.push('0');
         } else {
-            gamma_bits.push(false);
-            alpha_bits.push(true);
+            gamma_bits.push('0');
+            alpha_bits.push('1');
         }
     }
 
-    gamma_bits.reverse();
-    alpha_bits.reverse();
-
-    let gamma = gamma_bits.into_vec()[0];
-    let alpha = alpha_bits.into_vec()[0];
+    let gamma = isize::from_str_radix(&gamma_bits, 2).unwrap();
+    let alpha = isize::from_str_radix(&alpha_bits, 2).unwrap();
     let answer = gamma * alpha;
 
     println!("first answer is {}", answer);
