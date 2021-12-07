@@ -1,6 +1,3 @@
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-
 const INPUT: &str = include_str!("../../../inputs/day-7.txt");
 
 fn main() -> anyhow::Result<()> {
@@ -17,25 +14,15 @@ fn main() -> anyhow::Result<()> {
         pos_counts[pos] += 1;
     }
 
-    let most_pop: BinaryHeap<_> = pos_counts
-        .iter()
-        .copied()
-        .enumerate()
-        .map(|(pos, count)| PosCount { pos, count })
-        .collect();
-
-    let answer = most_pop
-        .clone()
-        .into_iter()
-        .map(|pc| cost_to_move(&pos_counts, pc.pos))
+    let answer = (0..pos_counts.len())
+        .map(|pos| cost_to_move(&pos_counts, pos))
         .min()
         .unwrap();
 
     println!("first answer is {}", answer);
 
-    let answer = most_pop
-        .into_iter()
-        .map(|pc| cost_to_move2(&pos_counts, pc.pos))
+    let answer = (0..pos_counts.len())
+        .map(|pos| cost_to_move2(&pos_counts, pos))
         .min()
         .unwrap();
 
@@ -60,29 +47,3 @@ fn cost_to_move2(pop_counts: &[usize], pos: usize) -> usize {
     }
     cost
 }
-
-#[derive(Clone)]
-struct PosCount {
-    pos: usize,
-    count: usize,
-}
-
-impl PartialOrd for PosCount {
-    fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
-        Some(self.cmp(&rhs))
-    }
-}
-
-impl Ord for PosCount {
-    fn cmp(&self, rhs: &Self) -> Ordering {
-        self.count.cmp(&rhs.count)
-    }
-}
-
-impl PartialEq for PosCount {
-    fn eq(&self, rhs: &Self) -> bool {
-        self.count == rhs.count
-    }
-}
-
-impl Eq for PosCount {}
