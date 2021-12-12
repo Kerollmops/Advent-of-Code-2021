@@ -20,16 +20,24 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let answer = recursive_explore(&connections, vec![Cave::Start]);
+    let answer = recursive_explore(
+        &connections,
+        |path, cave| !(cave.is_small() && path.contains(cave)),
+        vec![Cave::Start],
+    );
     println!("first answer is {}", answer);
 
-    let answer = recursive_explore2(&connections, vec![Cave::Start]);
+    let answer = recursive_explore(&connections, accept_cave, vec![Cave::Start]);
     println!("second answer is {}", answer);
 
     Ok(())
 }
 
-fn recursive_explore(connections: &HashMap<Cave, Vec<Cave>>, path: Vec<Cave>) -> usize {
+fn recursive_explore<F: FnMut(&[Cave], &Cave) -> bool + Copy>(
+    connections: &HashMap<Cave, Vec<Cave>>,
+    mut visit_cave: F,
+    path: Vec<Cave>,
+) -> usize {
     if let Some(last) = path.last() {
         if *last == Cave::End {
             1
@@ -37,34 +45,10 @@ fn recursive_explore(connections: &HashMap<Cave, Vec<Cave>>, path: Vec<Cave>) ->
             if let Some(childs) = connections.get(last) {
                 let mut count = 0;
                 for cave in childs.into_iter() {
-                    if !(cave.is_small() && path.contains(cave)) {
+                    if visit_cave(&path, cave) {
                         let mut new_path = path.clone();
                         new_path.push(cave.clone());
-                        count += recursive_explore(connections, new_path);
-                    }
-                }
-                count
-            } else {
-                0
-            }
-        }
-    } else {
-        0
-    }
-}
-
-fn recursive_explore2(connections: &HashMap<Cave, Vec<Cave>>, path: Vec<Cave>) -> usize {
-    if let Some(last) = path.last() {
-        if *last == Cave::End {
-            1
-        } else {
-            if let Some(childs) = connections.get(last) {
-                let mut count = 0;
-                for cave in childs.into_iter() {
-                    if accept_cave(&path, cave) {
-                        let mut new_path = path.clone();
-                        new_path.push(cave.clone());
-                        count += recursive_explore2(connections, new_path);
+                        count += recursive_explore(connections, visit_cave, new_path);
                     }
                 }
                 count
@@ -78,21 +62,12 @@ fn recursive_explore2(connections: &HashMap<Cave, Vec<Cave>>, path: Vec<Cave>) -
 }
 
 fn accept_cave(path: &[Cave], cave: &Cave) -> bool {
-    if cave.is_small() {
-        if path.contains(cave) {
-            let mut small_occurences = HashMap::new();
-            for c in path.iter().filter(|c| c.is_small()) {
-                *small_occurences.entry(c).or_insert(0) += 1;
-            }
-
-            if small_occurences.iter().any(|(_, count)| *count >= 2) {
-                false
-            } else {
-                true
-            }
-        } else {
-            true
+    if cave.is_small() && path.contains(cave) {
+        let mut small_occurences = HashMap::new();
+        for c in path.iter().filter(|c| c.is_small()) {
+            *small_occurences.entry(c).or_insert(0) += 1;
         }
+        !small_occurences.iter().any(|(_, count)| *count >= 2)
     } else {
         true
     }
