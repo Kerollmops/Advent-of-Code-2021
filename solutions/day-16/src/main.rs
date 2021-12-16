@@ -1,26 +1,34 @@
+use bitvec::prelude::*;
+
 const INPUT: &str = include_str!("../../../inputs/day-16.txt");
 
 fn main() -> anyhow::Result<()> {
-    let _first_binary = [
+    let _first_binary: BitVec<usize, Msb0> = [
         true, true, false, true, false, false, true, false, true, true, true, true, true, true,
         true, false, false, false, true, false, true, false, false, false,
-    ];
+    ]
+    .into_iter()
+    .collect();
 
-    let _second_binary = [
+    let _second_binary: BitVec<usize, Msb0> = [
         false, false, true, true, true, false, false, false, false, false, false, false, false,
         false, false, false, false, true, true, false, true, true, true, true, false, true, false,
         false, false, true, false, true, false, false, true, false, true, false, false, true,
         false, false, false, true, false, false, true, false, false, false, false, false, false,
         false, false, false,
-    ];
+    ]
+    .into_iter()
+    .collect();
 
-    let _third_binary = [
+    let _third_binary: BitVec<usize, Msb0> = [
         true, true, true, false, true, true, true, false, false, false, false, false, false, false,
         false, false, true, true, false, true, false, true, false, false, false, false, false,
         false, true, true, false, false, true, false, false, false, false, false, true, false,
         false, false, true, true, false, false, false, false, false, true, true, false, false,
         false, false, false,
-    ];
+    ]
+    .into_iter()
+    .collect();
 
     let binary = hex_to_binary(INPUT.trim());
     let mut version_sum = 0;
@@ -35,7 +43,10 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn parse_packet<'a, FV: FnMut(u32)>(bits: &'a [bool], fv: &mut FV) -> (usize, &'a [bool]) {
+fn parse_packet<'a, FV: FnMut(u32)>(
+    bits: &'a BitSlice<usize, Msb0>,
+    fv: &mut FV,
+) -> (usize, &'a BitSlice<usize, Msb0>) {
     let (v, bits) = bits.split_at(3);
     let (id, bits) = bits.split_at(3);
     let version = bits_to_number([false, v[0], v[1], v[2]]);
@@ -129,7 +140,7 @@ impl Operator {
     }
 }
 
-fn hex_to_binary(s: &str) -> Vec<bool> {
+fn hex_to_binary(s: &str) -> BitVec<usize, Msb0> {
     s.chars()
         .flat_map(|c| match c {
             '0' => [false, false, false, false],
