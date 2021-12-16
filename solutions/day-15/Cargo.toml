@@ -1,0 +1,9 @@
+[package]
+name = "day-15"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.51"
+ndarray = "0.15.4"
+pathfinding = "3.0.5"
